@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import {
   Check,
   ChevronDown,
@@ -469,27 +468,7 @@ export default function ArcaPage() {
       {/* Contatti */}
       <section className="px-6 pb-12 lg:px-40 lg:pb-24" id="contatti">
         <div className="container mx-auto max-w-6xl bg-azure rounded-3xl py-16 px-6 lg:px-16">
-          <div className="flex flex-col items-center text-center gap-6">
-            <Image
-              src="/arca/doggo-curious.png"
-              alt=""
-              width={720}
-              height={720}
-              className="w-28 h-28 object-contain"
-            />
-
-            <h2 className="text-4xl font-bold">Porta Arca nel tuo rifugio</h2>
-
-            <p className="text-lg text-green max-w-2xl">
-              Raccontaci chi siete e come vi organizzate: ti ricontattiamo noi
-              per conoscerci e mostrarti Arca. Se fai volontariato e vorresti
-              proporla al tuo rifugio, scrivici anche tu.
-            </p>
-
-            <div className="w-full max-w-3xl mt-4">
-              <ContactForm />
-            </div>
-          </div>
+          <ContactForm />
         </div>
       </section>
     </>
