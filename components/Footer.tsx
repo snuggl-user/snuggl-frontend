@@ -34,7 +34,15 @@ export default async function Footer() {
               </li>
               <li>
                 <Link
-                  href="#team"
+                  href="/arca"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Arca per i rifugi
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#team"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   Chi siamo
