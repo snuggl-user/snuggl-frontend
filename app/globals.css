@@ -23,6 +23,7 @@ section[id] {
   --silver: #b4b4b4;
   --black: #2d2d2d;
   --green: #588d89;
+  --deep-teal: #1f5f5c;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -67,6 +68,7 @@ section[id] {
   --color-silver: var(--silver);
   --color-black: var(--black);
   --color-green: var(--green);
+  --color-deep-teal: var(--deep-teal);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-heading: var(--font-fredoka);

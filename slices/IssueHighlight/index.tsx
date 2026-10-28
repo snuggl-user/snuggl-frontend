@@ -28,9 +28,9 @@ const IssueHighlight: FC<IssueHighlightProps> = ({ slice }) => {
           </p>
 
           <h1 className="text-4xl">{slice.primary.title}</h1>
-          <p className="text-lg text-green">
+          <div className="text-lg text-green">
             <PrismicRichText field={slice.primary.description} />
-          </p>
+          </div>
         </div>
         <div className="flex bg-white py-5 px-10 gap-2 justify-center items-center rounded-3xl flex-col shadow-xl w-full lg:w-auto">
           <h1 className="text-6xl text-primary">{slice.primary.stat_number}</h1>

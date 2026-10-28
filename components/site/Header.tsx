@@ -5,10 +5,12 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import MobileMenu from "@/components/ui/MobileMenu";
 
+// Le ancore partono da "/": l'header c'è anche su /arca, dove #team non esiste.
 const navigationLinks = [
   { href: "/", label: "Home" },
+  { href: "/arca", label: "Arca" },
   { href: "/blog", label: "Blog" },
-  { href: "#team", label: "Team" },
+  { href: "/#team", label: "Team" },
 ];
 
 export default async function Header() {
@@ -51,7 +53,7 @@ export default async function Header() {
               asChild
               className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 font-bold"
             >
-              <Link href="#newsletter">Snuggl an invite</Link>
+              <Link href="/#newsletter">Snuggl an invite</Link>
             </Button>
           </nav>
 
