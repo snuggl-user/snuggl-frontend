@@ -14,14 +14,6 @@ type Payload = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const escapeHtml = (value: string) =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-
 const clean = (value: unknown, max: number) =>
   typeof value === "string" ? value.trim().slice(0, max) : "";
 
@@ -69,37 +61,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const to = process.env.ARCA_CONTACT_EMAIL;
-    const sender = process.env.BREVO_SENDER_EMAIL || to;
+    const listId = Number(process.env.ARCA_LIST_ID);
 
-    if (!to || !sender) {
-      console.error("ARCA_CONTACT_EMAIL non è configurata");
+    if (!listId) {
+      console.error("ARCA_LIST_ID non è configurata");
       return NextResponse.json({ error: "Errore interno" }, { status: 500 });
     }
 
-    const rows: [string, string][] = [
-      ["Nome", data.name],
-      ["Email", data.email],
-      ["Telefono", data.phone || "—"],
-      ["Rifugio", data.shelter],
-      ["Città", data.city],
-      ["Chi è", data.role],
-      ["Messaggio", data.message || "—"],
-    ];
-
-    const htmlContent = `
-      <h2>Nuova richiesta per Arca</h2>
-      <table cellpadding="6" style="border-collapse:collapse">
-        ${rows
-          .map(
-            ([label, value]) =>
-              `<tr><td style="vertical-align:top"><strong>${label}</strong></td><td style="white-space:pre-wrap">${escapeHtml(value)}</td></tr>`
-          )
-          .join("")}
-      </table>
-    `;
-
-    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    // Salva la richiesta come contatto nella lista Arca. Se l'email esiste
+    // già (es. iscritto alla newsletter) aggiorna gli attributi e aggiunge
+    // la lista senza toccare le altre.
+    const res = await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
       headers: {
         "api-key": process.env.BREVO_API_KEY!,
@@ -107,14 +79,21 @@ export async function POST(req: Request) {
         accept: "application/json",
       },
       body: JSON.stringify({
-        sender: { email: sender, name: "Snuggl Arca" },
-        to: [{ email: to }],
-        replyTo: { email: data.email, name: data.name },
-        subject: `Arca · richiesta da ${data.shelter} (${data.city})`,
-        htmlContent,
+        email: data.email,
+        attributes: {
+          NOME: data.name,
+          TELEFONO: data.phone,
+          RIFUGIO: data.shelter,
+          CITTA: data.city,
+          RUOLO: data.role,
+          MESSAGGIO: data.message,
+        },
+        listIds: [listId],
+        updateEnabled: true,
       }),
     });
 
+    // 201 = contatto creato, 204 = contatto esistente aggiornato
     if (!res.ok) {
       const text = await res.text();
       console.error("Errore Brevo", res.status, text);
