@@ -1,8 +1,9 @@
 import { FC } from "react";
-import { Content } from "@prismicio/client";
-import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
+import { Content, asText } from "@prismicio/client";
+import { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import Link from "next/link";
+import { parsePublishedAt } from "@/components/blog/articleHeader";
 
 /**
  * Props for `ArticleHeader`.
@@ -60,10 +61,10 @@ const ArticleHeader: FC<ArticleHeaderProps> = ({ slice }) => {
           </span>
         )}
 
-        {/* Titolo */}
-        <div className="text-4xl md:text-5xl font-heading font-semibold leading-tight text-foreground mb-4 [&_p]:m-0">
-          <PrismicRichText field={title} />
-        </div>
+        {/* Titolo: sempre H1, anche se in Prismic è scritto come paragrafo */}
+        <h1 className="text-4xl md:text-5xl font-heading font-semibold leading-tight text-foreground mb-4">
+          {asText(title)}
+        </h1>
 
         {/* Sottotitolo */}
         {subtitle && (
@@ -87,7 +88,9 @@ const ArticleHeader: FC<ArticleHeaderProps> = ({ slice }) => {
           {published_at && (
             <>
               <span className="w-1 h-1 bg-current rounded-full inline-block"></span>
-              <span>{published_at}</span>
+              <time dateTime={parsePublishedAt(published_at)}>
+                {published_at}
+              </time>
             </>
           )}
           {read_time && (

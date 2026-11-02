@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fredoka, Urbanist } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { openGraphDefaults, siteUrl } from "@/lib/site";
 
 export const fredoka = Fredoka({
   subsets: ["latin"],
@@ -16,8 +17,10 @@ export const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Snuggl",
   description: "Adopt, don't shop.",
+  openGraph: { ...openGraphDefaults, type: "website" },
 };
 
 export default function RootLayout({

@@ -3,6 +3,7 @@ import { SliceZone } from "@prismicio/react";
 import { isFilled } from "@prismicio/client";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+import { openGraphDefaults } from "@/lib/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
@@ -11,9 +12,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: page.data.meta_title || "Blog — Snuggl",
     description: page.data.meta_description,
-    openGraph: page.data.meta_image?.url
-      ? { images: [{ url: page.data.meta_image.url }] }
-      : undefined,
+    alternates: { canonical: "/blog" },
+    openGraph: {
+      ...openGraphDefaults,
+      url: "/blog",
+      images: page.data.meta_image?.url
+        ? [{ url: page.data.meta_image.url }]
+        : undefined,
+    },
   };
 }
 

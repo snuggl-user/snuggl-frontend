@@ -18,12 +18,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { AppPreview, ContactForm } from "@/components/arca";
 import { DangerIcon } from "@/app/icons";
+import { openGraphDefaults } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Arca · Il gestionale gratuito per rifugi e canili | Snuggl",
   description:
     "Arca è il gestionale gratuito di Snuggl per rifugi e canili: task del giorno, schede degli animali, volontari e gestori in un unico posto.",
+  alternates: { canonical: "/arca" },
   openGraph: {
+    ...openGraphDefaults,
+    url: "/arca",
     title: "Arca · Il gestionale gratuito per rifugi e canili",
     description:
       "Task del giorno, schede degli animali, volontari e gestori in un unico posto. Gratis, per sempre.",

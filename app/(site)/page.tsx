@@ -5,6 +5,8 @@ import { components } from "@/slices";
 import { ArcaAnnouncement, ArcaPromo } from "@/components/arca";
 import { LatestArticles } from "@/components/blog";
 import { NewsletterBar } from "@/components/site/NewsletterBar";
+import { JsonLd } from "@/components/JsonLd";
+import { openGraphDefaults, organizationJsonLd } from "@/lib/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
@@ -15,7 +17,10 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: menu.data.site_title || "Snuggl",
       description: menu.data.meta_description || "Adopt, don't shop.",
+      alternates: { canonical: "/" },
       openGraph: {
+        ...openGraphDefaults,
+        url: "/",
         images: menu.data.logo?.url ? [{ url: menu.data.logo.url }] : [],
       },
     };
@@ -23,6 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: "Snuggl",
       description: "Adopt, don't shop.",
+      alternates: { canonical: "/" },
     };
   }
 }
@@ -32,7 +38,8 @@ export default async function HomePage() {
 
   // Gli ultimi articoli servono a più sezioni: le foto dell'hero, i widget di
   // "Cosa facciamo" e la sezione "Dal blog".
-  const [page, articles] = await Promise.all([
+  const [menu, page, articles] = await Promise.all([
+    client.getSingle("menu_site").catch(() => null),
     client.getSingle("homepage").catch(() => null),
     client
       .getByType("article", {
@@ -66,6 +73,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={organizationJsonLd(menu?.data.logo?.url)} />
       <SliceZone
         slices={slices.slice(0, splitAt)}
         components={components}
