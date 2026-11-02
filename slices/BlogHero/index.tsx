@@ -71,6 +71,7 @@ const BlogHero: FC<BlogHeroProps> = ({ slice, context }) => {
                   <div className="md:aspect-auto overflow-hidden max-h-[320px]">
                     <PrismicNextImage
                       field={header.hero_image}
+                      alt=""
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
