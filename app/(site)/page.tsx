@@ -3,6 +3,8 @@ import { createClient } from "@/prismicio";
 import { SliceZone } from "@prismicio/react";
 import { components } from "@/slices";
 import { ArcaAnnouncement, ArcaPromo } from "@/components/arca";
+import { LatestArticles } from "@/components/blog";
+import { NewsletterBar } from "@/components/site/NewsletterBar";
 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
@@ -28,7 +30,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const client = createClient();
 
-  const page = await client.getSingle("homepage").catch(() => null);
+  // Gli ultimi articoli servono a più sezioni: le foto dell'hero, i widget di
+  // "Cosa facciamo" e la sezione "Dal blog".
+  const [page, articles] = await Promise.all([
+    client.getSingle("homepage").catch(() => null),
+    client
+      .getByType("article", {
+        orderings: [
+          { field: "document.first_publication_date", direction: "desc" },
+        ],
+        pageSize: 12,
+      })
+      .then((res) => res.results)
+      .catch(() => []),
+  ]);
 
   if (!page) {
     return (
@@ -41,8 +56,8 @@ export default async function HomePage() {
     );
   }
 
-  // La sezione di Arca va subito dopo "La nostra soluzione": se lo slice non
-  // c'è, finisce in fondo.
+  // Gli ultimi articoli e la sezione di Arca vanno subito dopo lo slice
+  // solution_steps ("Cosa facciamo"): se lo slice non c'è, finiscono in fondo.
   const slices = page.data.slices;
   const solutionIndex = slices.findIndex(
     (slice) => slice.slice_type === "solution_steps"
@@ -51,10 +66,15 @@ export default async function HomePage() {
 
   return (
     <>
-      <ArcaAnnouncement />
-      <SliceZone slices={slices.slice(0, splitAt)} components={components} />
+      <SliceZone
+        slices={slices.slice(0, splitAt)}
+        components={components}
+        context={{ badge: <ArcaAnnouncement />, articles }}
+      />
+      <LatestArticles articles={articles.slice(0, 3)} />
       <ArcaPromo />
       <SliceZone slices={slices.slice(splitAt)} components={components} />
+      <NewsletterBar />
     </>
   );
 }

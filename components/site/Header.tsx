@@ -18,48 +18,47 @@ export default async function Header() {
   const menu = await client.getSingle("menu_site").catch(() => null);
 
   return (
-    <header className="w-full bg-white border-b border-gray-100 px-6 lg:px-40 sticky top-0 z-10 shadow-sm">
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            {menu?.data?.logo?.url ? (
-              <Image
-                src={menu.data.logo.url}
-                alt={menu.data.logo.alt || "Snuggl"}
-                width={100}
-                height={100}
-                priority
-              />
-            ) : (
-              <span className="text-2xl font-heading font-semibold text-primary">
-                Snuggl
-              </span>
-            )}
-          </Link>
+    <header className="sticky top-0 z-30 px-4 pt-3">
+      {/* Barra a pillola sospesa: il contenuto scorre sotto, sfocato */}
+      <div className="mx-auto max-w-6xl flex items-center justify-between h-16 pl-6 pr-2 rounded-full bg-white/85 backdrop-blur-md border border-black/5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.25)]">
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          {menu?.data?.logo?.url ? (
+            <Image
+              src={menu.data.logo.url}
+              alt={menu.data.logo.alt || "Snuggl"}
+              width={100}
+              height={100}
+              priority
+            />
+          ) : (
+            <span className="text-2xl font-heading font-semibold text-primary">
+              Snuggl
+            </span>
+          )}
+        </Link>
 
-          {/* Navigation - Desktop */}
-          <nav className="hidden md:flex items-center gap-10">
-            {navigationLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-base font-medium text-black hover:text-primary transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Button
-              asChild
-              className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 font-bold"
+        {/* Navigation - Desktop */}
+        <nav className="hidden md:flex items-center gap-1">
+          {navigationLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-base font-medium text-black rounded-full px-4 py-2 hover:bg-azure hover:text-deep-teal transition-colors"
             >
-              <Link href="/#newsletter">Snuggl an invite</Link>
-            </Button>
-          </nav>
+              {link.label}
+            </Link>
+          ))}
+          <Button
+            asChild
+            className="ml-3 h-12 bg-deep-teal hover:bg-deep-teal/90 text-white rounded-full px-6 font-bold"
+          >
+            <Link href="/#newsletter">Resta aggiornato</Link>
+          </Button>
+        </nav>
 
-          {/* Mobile */}
-          <MobileMenu links={navigationLinks} />
-        </div>
+        {/* Mobile */}
+        <MobileMenu links={navigationLinks} />
       </div>
     </header>
   );

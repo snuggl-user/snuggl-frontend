@@ -1,28 +1,29 @@
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText } from "@prismicio/react";
 import Link from "next/link";
+import { getArticleHeader } from "./articleHeader";
 
 type ArticleCardProps = {
   article: any;
 };
 
 export function ArticleCard({ article }: ArticleCardProps) {
-  // Cerca la slice article_header per i dati
-  const headerSlice = article.data?.slices?.find(
-    (s: any) => s.slice_type === "article_header"
-  );
-  const header = headerSlice?.primary;
+  const header = getArticleHeader(article);
 
   if (!header) return null;
 
   return (
-    <Link href={article.url || `/blog/${article.uid}`} className="group block">
+    <Link
+      href={article.url || `/blog/${article.uid}`}
+      className="group block h-full"
+    >
       <article className="bg-white rounded-2xl overflow-hidden border border-fog hover:shadow-lg transition-shadow h-full flex flex-col">
         {/* Immagine */}
         {header.hero_image?.url && (
           <div className="aspect-[16/10] overflow-hidden">
             <PrismicNextImage
               field={header.hero_image}
+              alt=""
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>

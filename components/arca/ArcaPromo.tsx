@@ -15,14 +15,14 @@ const highlights = [
  */
 export function ArcaPromo() {
   return (
-    <section className="px-6 py-12 lg:px-40 lg:py-24" id="arca">
-      <div className="container max-w-6xl mx-auto bg-deep-teal text-white rounded-4xl p-8 lg:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center overflow-hidden">
+    <section className="px-4 py-12 lg:py-20" id="arca">
+      <div className="reveal max-w-6xl mx-auto bg-deep-teal text-white rounded-[2.5rem] p-8 sm:p-12 lg:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center overflow-hidden">
         <div className="flex flex-col gap-6">
           <p className="w-fit text-sm uppercase bg-white/10 text-mint-green rounded-full px-4 py-1.5">
             Novità · Per rifugi e canili
           </p>
 
-          <h2 className="text-4xl md:text-5xl leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.1] tracking-tight">
             Ti presentiamo <span className="text-primary">Arca</span>
           </h2>
 

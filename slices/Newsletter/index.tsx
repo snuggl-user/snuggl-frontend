@@ -1,101 +1,85 @@
 "use client";
 
-import { FC, FormEvent, useState } from "react";
+import { FC } from "react";
 import { asText, Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useNewsletterSignup } from "@/components/site/useNewsletterSignup";
 import { Mail } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export type NewsletterProps = SliceComponentProps<Content.NewsletterSlice>;
 
-type Status = "idle" | "loading" | "success" | "error";
-
 const Newsletter: FC<NewsletterProps> = ({ slice }) => {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
-  const [message, setMessage] = useState<string>("");
+  const { email, setEmail, status, message, isSubmitting, handleSubmit } =
+    useNewsletterSignup();
 
-  const isSubmitting = status === "loading";
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    console.log("handleSubmit chiamato", email);
-    setStatus("loading");
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          email,
-          consent: true, // se aggiungi checkbox, metti qui il valore reale
-        }),
-      });
-
-      if (!res.ok) {
-        setStatus("error");
-        setMessage("Ops, qualcosa è andato storto. Riprova tra poco.");
-        return;
-      }
-
-      setStatus("success");
-      setMessage(
-        "Controlla la tua email: ti abbiamo inviato un link di conferma 🐾"
-      );
-      setEmail("");
-    } catch {
-      setStatus("error");
-      setMessage("Errore di rete. Controlla la connessione e riprova.");
-    }
-  };
   const isContained = slice.variation === "default";
 
   return (
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className={
-        isContained ? "py-12" : "bg-azure py-12 px-6 lg:py-24 lg:px-40"
-      }
+      className={isContained ? "px-4 py-12 lg:py-20" : "bg-primary"}
       id="newsletter"
     >
       <div
-        className={
-          isContained
-            ? "container mx-auto max-w-6xl bg-azure rounded-3xl py-16 px-6 lg:px-16"
-            : "container mx-auto max-w-6xl"
-        }
+        className={cn(
+          "reveal relative overflow-hidden px-6 py-16 sm:px-12 lg:py-20",
+          isContained ? "max-w-6xl mx-auto rounded-[2.5rem] bg-primary" : ""
+        )}
       >
-        <div className="flex flex-col items-center text-center gap-8">
-          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-            <Mail className="w-8 h-8 text-white" />
-          </div>
+        {/* Cerchi decorativi e mascotte */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-white/15"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-32 -right-20 h-80 w-80 rounded-full bg-mint-green/40"
+        />
+        <Image
+          src="/arca/doggo-excited.png"
+          alt=""
+          width={720}
+          height={720}
+          className="hidden lg:block absolute bottom-6 right-10 w-40 h-40 object-contain"
+        />
 
-          <h2 className="text-4xl font-bold">{slice.primary.title}</h2>
+        <div className="relative max-w-2xl mx-auto flex flex-col items-center text-center gap-6">
+          <span className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm">
+            <Mail className="w-6 h-6 text-deep-teal" />
+          </span>
 
-          <p className="text-lg text-green max-w-2xl">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.1] tracking-tight">
+            {slice.primary.title}
+          </h2>
+
+          <p className="text-lg text-deep-teal">
             {asText(slice.primary.description)}
           </p>
 
+          {/* Da sm in su campo e bottone stanno nella stessa pillola bianca */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-4 w-full max-w-2xl"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full max-w-xl sm:rounded-full sm:bg-white sm:p-2 sm:shadow-xl"
           >
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={slice.primary.email_placeholder || "La tua email"}
-              className="flex-1 bg-white border-0 rounded-full px-6 py-6 text-base shadow-xl"
+              aria-label={slice.primary.email_placeholder || "La tua email"}
+              className="flex-1 h-14 bg-white border-0 rounded-full px-6 text-base md:text-base shadow-xl sm:shadow-none focus-visible:ring-0"
               required
               disabled={isSubmitting}
             />
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 py-6 text-base font-bold whitespace-nowrap shadow-xl w-full sm:w-auto"
+              className="h-14 bg-deep-teal hover:bg-deep-teal/90 text-white rounded-full px-8 text-base font-bold whitespace-nowrap w-full sm:w-auto"
             >
               {isSubmitting ? "Invio..." : slice.primary.button_text}
             </Button>
@@ -103,9 +87,12 @@ const Newsletter: FC<NewsletterProps> = ({ slice }) => {
 
           {status !== "idle" && (
             <p
-              className={`text-sm ${
-                status === "success" ? "text-green-700" : "text-red-600"
-              }`}
+              className={cn(
+                "text-sm font-bold rounded-full px-4 py-2",
+                status === "success"
+                  ? "bg-white/70 text-deep-teal"
+                  : "bg-white text-red-600"
+              )}
             >
               {message}
             </p>
